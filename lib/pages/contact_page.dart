@@ -34,7 +34,7 @@ class _ContactPageState extends State<ContactPage> {
     if (_editedContact?.name != null && _editedContact!.name!.isNotEmpty) {
       await _controller.saveOrUpdateContact(_editedContact!);
       Navigator.pop(context, _editedContact);
-    }else{
+    } else {
       FocusScope.of(context).requestFocus(_nameFocus);
     }
   }
@@ -48,68 +48,106 @@ class _ContactPageState extends State<ContactPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.red,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: Text(
-          _editedContact?.name ?? 'Novo Contato',
-          style: const TextStyle(color: Colors.white),
+    return WillPopScope(
+      onWillPop: _requestPop,
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: Colors.red,
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: Text(
+            _editedContact?.name ?? 'Novo Contato',
+            style: const TextStyle(color: Colors.white),
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _saveContact,
-        backgroundColor: Colors.red,
-        child: const Icon(Icons.save, color: Colors.white),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            GestureDetector(
-              onTap: () { },
-              child: Container(
-                height: 140,
-                width: 140,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: _editedContact?.img != null
-                      ? DecorationImage(
-                          image: FileImage(File(_editedContact!.img!)),
-                          fit: BoxFit.cover,
-                        )
+        floatingActionButton: FloatingActionButton(
+          onPressed: _saveContact,
+          backgroundColor: Colors.red,
+          child: const Icon(Icons.save, color: Colors.white),
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: () {},
+                child: Container(
+                  height: 140,
+                  width: 140,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: _editedContact?.img != null
+                        ? DecorationImage(
+                            image: FileImage(File(_editedContact!.img!)),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                  ),
+                  child: _editedContact?.img == null
+                      ? const Icon(Icons.person, size: 140, color: Colors.grey)
                       : null,
                 ),
-                child: _editedContact?.img == null
-                    ? const Icon(Icons.person, size: 140, color: Colors.grey)
-                    : null,
               ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              focusNode: _nameFocus,
-              controller: _controller.nameController,
-              decoration: const InputDecoration(labelText: 'Nome'),
-              onChanged: (value) => _updateContactField('name', value),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _controller.emailController,
-              decoration: const InputDecoration(labelText: 'E-mail'),
-              keyboardType: TextInputType.emailAddress,
-              onChanged: (value) => _updateContactField('email', value),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _controller.phoneController,
-              decoration: const InputDecoration(labelText: 'Telefone'),
-              keyboardType: TextInputType.phone,
-              onChanged: (value) => _updateContactField('phone', value),
-            ),
-          ],
+              const SizedBox(height: 16),
+              TextField(
+                focusNode: _nameFocus,
+                controller: _controller.nameController,
+                decoration: const InputDecoration(labelText: 'Nome'),
+                onChanged: (value) => _updateContactField('name', value),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _controller.emailController,
+                decoration: const InputDecoration(labelText: 'E-mail'),
+                keyboardType: TextInputType.emailAddress,
+                onChanged: (value) => _updateContactField('email', value),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _controller.phoneController,
+                decoration: const InputDecoration(labelText: 'Telefone'),
+                keyboardType: TextInputType.phone,
+                onChanged: (value) => _updateContactField('phone', value),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Future<bool> _requestPop() {
+    if (_userEdited) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Descartar Alterações?"),
+            content: const Text('Se sair as alterações serão perdidas.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: TextButton.styleFrom(foregroundColor: Colors.blue),
+                child: const Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+                style: TextButton.styleFrom(foregroundColor: Colors.blue),
+                child: const Text('Confirmar'),
+              ),
+            ],
+          );
+        },
+      );
+      return Future.value(false);
+    } else {
+      Navigator.of(context).pop();
+      return Future.value(false);
+    }
   }
 }
