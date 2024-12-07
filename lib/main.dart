@@ -13,10 +13,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Agenda de Contatos',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
-      home: const HomePage(title: 'Agenda de Contatos'),
+      home: const HomePage(title: 'Contatos'),
       debugShowCheckedModeBanner: false,
     );
   }
