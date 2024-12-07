@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import '../pages/contact_page.dart';
 import '../models/contact.dart';
 import 'dart:io';
 
 class ContactCard extends StatelessWidget {
-  const ContactCard({super.key, required this.contact});
+  const ContactCard({super.key, required this.contact, required this.onUpdate});
 
   final Contact contact;
+  final VoidCallback onUpdate;
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +63,16 @@ class ContactCard extends StatelessWidget {
           ),
         ),
       ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ContactPage(contact: contact),
+          ),
+        ).then((_) {
+          onUpdate();
+        });
+      },
     );
   }
 }
