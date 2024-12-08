@@ -4,6 +4,8 @@ import '../widgets/contact_card.dart';
 import '../models/contact.dart';
 import 'contact_page.dart';
 
+enum OrderOptions { orderAZ, orderZA }
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
 
@@ -33,6 +35,23 @@ class _MyHomePageState extends State<HomePage> {
     });
   }
 
+  void _orderList(OrderOptions result) {
+    switch (result) {
+      case OrderOptions.orderAZ:
+        contacts.sort((a, b) {
+          return a.name!.toLowerCase().compareTo(b.name!.toLowerCase());
+        });
+        break;
+      case OrderOptions.orderZA:
+        contacts.sort((a, b) {
+          return b.name!.toLowerCase().compareTo(a.name!.toLowerCase());
+        });
+        break;
+    }
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +59,26 @@ class _MyHomePageState extends State<HomePage> {
         centerTitle: true,
         backgroundColor: Colors.red,
         title: Text(widget.title, style: const TextStyle(color: Colors.white)),
+        actions: [
+          PopupMenuButton<OrderOptions>(
+            onSelected: _orderList,
+            icon: const Icon(
+              Icons.more_vert,
+              color: Colors.white,
+            ),
+            itemBuilder: (BuildContext context) =>
+                <PopupMenuEntry<OrderOptions>>[
+              const PopupMenuItem<OrderOptions>(
+                value: OrderOptions.orderAZ,
+                child: Text('Ordenar de A-Z'),
+              ),
+              const PopupMenuItem<OrderOptions>(
+                value: OrderOptions.orderZA,
+                child: Text('Ordenar de Z-A'),
+              ),
+            ],
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
