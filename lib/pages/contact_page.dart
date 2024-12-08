@@ -1,4 +1,5 @@
 import '../controllers/contact_controller.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import '../models/contact.dart';
 import 'dart:io';
@@ -70,7 +71,7 @@ class _ContactPageState extends State<ContactPage> {
           child: Column(
             children: [
               GestureDetector(
-                onTap: () {},
+                onTap: _updateContactImagem,
                 child: Container(
                   height: 140,
                   width: 140,
@@ -114,6 +115,21 @@ class _ContactPageState extends State<ContactPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _updateContactImagem() async {
+    final picker = ImagePicker();
+
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+    );
+
+    if (pickedFile != null) {
+      setState(() {
+        _userEdited = true;
+        _editedContact?.img = pickedFile.path;
+      });
+    }
   }
 
   Future<bool> _requestPop() {
