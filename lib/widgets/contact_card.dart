@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import '../controllers/contact_controller.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/material.dart';
 import '../pages/contact_page.dart';
 import '../models/contact.dart';
 import 'dart:io';
@@ -72,6 +73,14 @@ class ContactCard extends StatelessWidget {
     );
   }
 
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    await launchUrl(launchUri);
+  }
+
   void _showCotactPage(context) {
     Navigator.push(
       context,
@@ -96,7 +105,12 @@ class ContactCard extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pop(context);
+                        if(contact.phone != null){
+                          _makePhoneCall(contact.phone!);
+                        }
+                      },
                       child: const Text(
                         "Ligar",
                         style: TextStyle(color: Colors.redAccent, fontSize: 20),
