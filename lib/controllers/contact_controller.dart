@@ -23,6 +23,10 @@ class ContactController {
     }
   }
 
+  Future<void> deleteContact(Contact contact) async {
+    _helper.deleteContact(contact.id!);
+  }
+
   void updateContactField(Contact contact, String field, String value) {
     switch (field) {
       case 'name':
